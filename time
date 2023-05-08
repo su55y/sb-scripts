@@ -1,0 +1,9 @@
+#!/bin/sh
+case $BLOCK_BUTTON in
+    1) calendar-launcher >/dev/null 2>&1;;
+esac
+
+OUTPUT=" $(date "+ %H:%M") "
+
+# underline="underline='single' underline_color='#b16286'"
+printf "<span color='#d3869b' background='#8f3f71' weight='bold'>%s</span>\n" "$OUTPUT"
