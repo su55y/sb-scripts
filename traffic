@@ -1,0 +1,45 @@
+#!/bin/sh
+
+IFACE="wlan0"
+
+RX="/sys/class/net/$IFACE/statistics/rx_bytes"
+TX="/sys/class/net/$IFACE/statistics/tx_bytes"
+
+[ -f "$RX" ] || exit 1
+[ -f "$TX" ] || exit 1
+
+CACHE_DIR_NAME="traffic_${IFACE}"
+CACHE="${XDG_CACHE_HOME:-$HOME/.cache}"
+CACHE="${CACHE}/${CACHE_DIR_NAME}"
+[ -d "$CACHE" ] || {
+    mkdir -p "$CACHE" || exit 1
+}
+CRX="$CACHE/rx"
+CTX="$CACHE/tx"
+
+[ -f "$CRX" ] || {
+    cp "$RX" "$CRX" || exit 1
+    chmod 600 "$CRX"
+}
+[ -f "$CTX" ] || {
+    cp "$TX" "$CTX" || exit 1
+    chmod 600 "$CTX"
+}
+# $1 current and $2 previous statistics
+get_diff() {
+    read -r val < "$1"
+    read -r prev < "$2"
+
+    printf '%d' "$val" > "$2"
+    printf '%s' "$(printf '%d' "$((val-prev))" | numfmt --to=iec)"
+}
+
+rx="$(get_diff "$RX" "$CRX")"
+tx="$(get_diff "$TX" "$CTX")"
+
+ICON_DOWN=""
+ICON_UP=""
+OUTPUT=" $ICON_DOWN $rx $ICON_UP $tx "
+
+# underline="underline='single' underline_color='#cc241d'"
+printf "<span color='#fb4934' background='#9d0006' weight='bold'>%s</span>\n" "$OUTPUT"
