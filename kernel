@@ -12,10 +12,4 @@ case $BLOCK_BUTTON in
     ;;
 esac
 
-ICON=""
-# THEMED_ICON="<span color='#1793d1'>$ICON</span>"
-VALUE="$(uname -r | cut -d '-' -f 1)"
-OUTPUT=" $ICON $VALUE "
-
-# underline="underline='single' underline_color='#458588'"
-printf "<span color='#83a598' background='#076678' weight='bold'>%s</span>\n" "$OUTPUT"
+printf '%s' "$(uname -r | cut -d '-' -f 1)"

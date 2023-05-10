@@ -19,7 +19,4 @@ case $VALUE in
 esac
 
 ICON=" <span rise='1.5pt'>$ICON</span>"
-OUTPUT="${ICON} ${VALUE}% "
-
-# underline="underline='single' underline_color='#d65d0e'"
-printf "<span color='#fe8019' background='#af3a03' weight='bold'>%s</span>\n" "$OUTPUT"
+printf '%s' "${ICON} ${VALUE}% "

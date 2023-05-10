@@ -37,9 +37,4 @@ get_diff() {
 rx="$(get_diff "$RX" "$CRX")"
 tx="$(get_diff "$TX" "$CTX")"
 
-ICON_DOWN=""
-ICON_UP=""
-OUTPUT=" $ICON_DOWN $rx $ICON_UP $tx "
-
-# underline="underline='single' underline_color='#cc241d'"
-printf "<span color='#fb4934' background='#9d0006' weight='bold'>%s</span>\n" "$OUTPUT"
+printf '%s' " $rx  $tx"

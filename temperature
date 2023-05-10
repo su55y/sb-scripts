@@ -1,9 +1,6 @@
 #!/bin/sh
 
-ICON=""
 SENSOR="k10temp-pci-00c3"
 VALUE="$(sensors -u $SENSOR | sed -n 's/.*temp1_input: \([0-9]*\.[0-9]*\).*/\1/; s/\(\.[0-9]\)[0-9]*/\1/; T; p; q')"
-OUTPUT=" ${ICON} ${VALUE}% "
 
-# underline="underline='single' underline_color='#d79921'"
-printf "<span color='#fabd2f' background='#b57614' weight='bold'>%s</span>\n" "$OUTPUT"
+printf '%s%%' "$VALUE"
