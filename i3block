@@ -1,0 +1,13 @@
+#!/bin/sh
+
+[ -n "$MODULE" ] || exit 1
+SCRIPTPATH="$(cd -- "$(dirname "$0")" >/dev/null 2>&1 || exit 1 ; pwd -P)"
+MODULE_PATH=$(printf '%s/scripts/%s' "$SCRIPTPATH" "$MODULE")
+[ -f "$MODULE_PATH" ] || exit 1
+
+VALUE="$(BUTTON_BLOCK="$BLOCK_BUTTON" $MODULE_PATH)"
+[ -n "$ICON" ] && OUTPUT=" $ICON $VALUE " || OUTPUT=" $VALUE "
+
+# underline="underline='single' underline_color='${COLOR3:-#cc241d}'"
+printf "<span color='%s' background='%s' weight='bold'>%s</span>\n"\
+    "${COLOR1:-#fb4934}" "${COLOR2:-#9d0006}" "$OUTPUT"
