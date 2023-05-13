@@ -1,29 +1,28 @@
 #!/bin/sh
 
-die() { notify-send -a "$0" "$@"; exit 1; }
-
 CHECKUPDATES_DB="${TMPDIR:-/tmp}/checkup-db-$USER/"
 
 trap 'rm -f $CHECKUPDATES_DB/db.lck' INT TERM EXIT
 
-DBPath="$(pacman-conf DBPath)"
-if [ -z "$DBPath" ] || [ ! -d "$DBPath" ]; then
-	DBPath="@localstatedir@/lib/pacman/"
+DBPATH="$(pacman-conf DBPath)"
+if [ -z "$DBPATH" ] || [ ! -d "$DBPATH" ]; then
+	DBPATH="@localstatedir@/lib/pacman/"
 fi
 
 mkdir -p "$CHECKUPDATES_DB"
-ln -s "${DBPath}/local" "$CHECKUPDATES_DB" >/dev/null 2>&1
-fakeroot -- pacman -Sy --dbpath "$CHECKUPDATES_DB" >/dev/null  2>&1 ||\
-    die 'Cannot fetch updates'
+ln -s "${DBPATH}/local" "$CHECKUPDATES_DB" >/dev/null 2>&1
+fakeroot -- pacman -Sy --dbpath "$CHECKUPDATES_DB" >/dev/null  2>&1 || {
+    notify-send -a "pacman-updates" "Cannot fetch updates"
+    exit 1
+}
 
 case $BLOCK_BUTTON in
     1)
-        notify-send -a "$0"\
+        notify-send -i none -a "pacman-updates"\
             "$(pacman -Qu --dbpath "$CHECKUPDATES_DB" 2> /dev/null |\
-                grep -cv '\[.*\]')"
+                awk '! /[\[]/{print $1}')"
     ;;
 esac
 
 
-
-pacman -Qu --dbpath "$CHECKUPDATES_DB" 2> /dev/null | grep -cv '\[.*\]'
+printf '%s' "$(pacman -Qu --dbpath "$CHECKUPDATES_DB" 2> /dev/null | grep -cv '\[.*\]')"
