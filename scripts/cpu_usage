@@ -1,0 +1,39 @@
+#!/bin/sh
+# port of https://github.com/vivien/i3blocks-contrib/blob/master/cpu_usage2/cpu_usage2.c
+
+CACHE_DIR_NAME="cpu_usage_cache"
+CACHE="${XDG_CACHE_HOME:-$HOME/.cache}"
+CACHE="${CACHE}/${CACHE_DIR_NAME}"
+[ -d "$CACHE" ] || {
+    mkdir -p "$CACHE" || exit 1
+}
+
+USED_FILE="${CACHE}/used"
+TOTAL_FILE="${CACHE}/total"
+
+get_used(){
+    awk 'NR==1 {  
+        used=$2+$3+$4+$7+$8+$9+$10+$11;
+        total=used+$5+$6
+        printf("%d %d\n", used, total)
+    }' /proc/stat
+}
+
+update(){
+    printf '%d' "$1" > "$USED_FILE"
+    printf '%d' "$2" > "$TOTAL_FILE"
+}
+
+result="$(get_used)"
+used="${result% *}"
+total="${result#* }"
+
+if [ ! -f "$USED_FILE" ] || [ ! -f "$TOTAL_FILE" ]; then
+    update "$used" "$total" && exit
+fi
+
+read -r old_used < "$USED_FILE"
+read -r old_total < "$TOTAL_FILE"
+update "$used" "$total"
+
+printf '%.2f%%' "$(echo "scale=2; 100*(${used}-${old_used})/(${total}-${old_total})" | bc)"
