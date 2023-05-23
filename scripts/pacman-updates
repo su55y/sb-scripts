@@ -24,5 +24,8 @@ case $BLOCK_BUTTON in
     ;;
 esac
 
-
-printf '%s' "$(pacman -Qu --dbpath "$CHECKUPDATES_DB" 2> /dev/null | grep -cv '\[.*\]')"
+VALUE="$(pacman -Qu --dbpath "$CHECKUPDATES_DB" 2> /dev/null | grep -cv '\[.*\]')"
+case $VALUE in
+    0) printf '%s' "$(uname -r | cut -d '-' -f 1)" ;;
+    *) printf '%s' "$VALUE" ;;
+esac
