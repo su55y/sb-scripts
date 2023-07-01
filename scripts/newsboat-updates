@@ -1,0 +1,19 @@
+#!/bin/sh
+
+
+unread_count(){
+    VALUE="$(newsboat -x print-unread)"
+    printf '%d' "${VALUE%% *}"
+}
+update(){
+    notify-send -a "newsboat" "start updating..."
+    newsboat -x reload
+    notify-send -a "newsboat" "$(unread_count) new entries"
+}
+
+case $BLOCK_BUTTON in
+    1) update ;;
+esac
+
+
+printf '%d' "$VALUE"
