@@ -2,13 +2,15 @@
 
 
 unread_count(){
-    VALUE="$(newsboat -x print-unread)"
-    printf '%d' "${VALUE%% *}"
+    unread="$(newsboat -x print-unread)"
+    printf '%d' "${unread%% *}"
 }
 update(){
-    notify-send -a "newsboat" "start updating..."
+    notify-send -a " newsboat" "Updating RSS feeds..."
+    old_unread="$(unread_count)"
     newsboat -x reload
-    notify-send -a "newsboat" "$(unread_count) new entries"
+    new_unread="$(unread_count)"
+    notify-send -a " newsboat" "$((old_unread - new_unread)) new entries"
 }
 
 case $BLOCK_BUTTON in
@@ -16,4 +18,4 @@ case $BLOCK_BUTTON in
 esac
 
 
-printf '%d' "$VALUE"
+printf '%d' "$(unread_count)"
