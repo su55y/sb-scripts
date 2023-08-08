@@ -1,21 +1,19 @@
 #!/bin/sh
 
-
-unread_count(){
-    unread="$(newsboat -x print-unread)"
-    printf '%d' "${unread%% *}"
+unread_count() {
+	unread="$(newsboat -x print-unread)"
+	printf '%d' "${unread%% *}"
 }
-update(){
-    notify-send -a " newsboat" "Updating RSS feeds..."
-    old_unread="$(unread_count)"
-    newsboat -x reload
-    new_unread="$(unread_count)"
-    notify-send -a " newsboat" "$((old_unread - new_unread)) new entries"
+update() {
+	notify-send -a " newsboat" "Updating RSS feeds..."
+	old_unread="$(unread_count)"
+	newsboat -x reload
+	new_unread="$(unread_count)"
+	notify-send -a " newsboat" "$((old_unread - new_unread)) new entries"
 }
 
 case $BLOCK_BUTTON in
-    1) update ;;
+1) update ;;
 esac
-
 
 printf '%d' "$(unread_count)"

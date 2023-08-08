@@ -1,6 +1,6 @@
 #!/bin/sh
 case $BLOCK_BUTTON in
-    1) calendar-launcher >/dev/null 2>&1;;
+1) calendar-launcher >/dev/null 2>&1 ;;
 esac
 
 printf '%s' "$(date '+%H:%M')"

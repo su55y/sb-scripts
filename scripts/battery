@@ -5,17 +5,17 @@ VALUE="${BATERY##* }"
 STATE="${BATERY%% *}"
 CHARGING="Charging"
 case $VALUE in
-    100) [ "$STATE" = "$CHARGING" ] && ICON="󰂅" || ICON="󰁹" ;;
-    0*) [ "$STATE" = "$CHARGING" ] && ICON="󰢜" || ICON="󰁺" ;;
-    1*) [ "$STATE" = "$CHARGING" ] && ICON="󰢜" || ICON="󰁺" ;;
-    2*) [ "$STATE" = "$CHARGING" ] && ICON="󰂆" || ICON="󰁻" ;;
-    3*) [ "$STATE" = "$CHARGING" ] && ICON="󰂇" || ICON="󰁼" ;;
-    4*) [ "$STATE" = "$CHARGING" ] && ICON="󰂈" || ICON="󰁽" ;;
-    5*) [ "$STATE" = "$CHARGING" ] && ICON="󰢝" || ICON="󰁾" ;;
-    6*) [ "$STATE" = "$CHARGING" ] && ICON="󰂉" || ICON="󰁿" ;;
-    7*) [ "$STATE" = "$CHARGING" ] && ICON="󰢞" || ICON="󰂀" ;;
-    8*) [ "$STATE" = "$CHARGING" ] && ICON="󰂊" || ICON="󰂁" ;;
-    9*) [ "$STATE" = "$CHARGING" ] && ICON="󰂋" || ICON="󰂂" ;;
+100) [ "$STATE" = "$CHARGING" ] && ICON="󰂅" || ICON="󰁹" ;;
+0*) [ "$STATE" = "$CHARGING" ] && ICON="󰢜" || ICON="󰁺" ;;
+1*) [ "$STATE" = "$CHARGING" ] && ICON="󰢜" || ICON="󰁺" ;;
+2*) [ "$STATE" = "$CHARGING" ] && ICON="󰂆" || ICON="󰁻" ;;
+3*) [ "$STATE" = "$CHARGING" ] && ICON="󰂇" || ICON="󰁼" ;;
+4*) [ "$STATE" = "$CHARGING" ] && ICON="󰂈" || ICON="󰁽" ;;
+5*) [ "$STATE" = "$CHARGING" ] && ICON="󰢝" || ICON="󰁾" ;;
+6*) [ "$STATE" = "$CHARGING" ] && ICON="󰂉" || ICON="󰁿" ;;
+7*) [ "$STATE" = "$CHARGING" ] && ICON="󰢞" || ICON="󰂀" ;;
+8*) [ "$STATE" = "$CHARGING" ] && ICON="󰂊" || ICON="󰂁" ;;
+9*) [ "$STATE" = "$CHARGING" ] && ICON="󰂋" || ICON="󰂂" ;;
 esac
 
 ICON=" <span rise='1.5pt'>$ICON</span>"

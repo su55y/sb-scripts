@@ -11,22 +11,22 @@ fi
 
 mkdir -p "$CHECKUPDATES_DB"
 ln -s "${DBPATH}/local" "$CHECKUPDATES_DB" >/dev/null 2>&1
-fakeroot -- pacman -Sy --dbpath "$CHECKUPDATES_DB" >/dev/null  2>&1 || {
-    notify-send -a "pacman-updates" "Cannot fetch updates"
-    printf '%s' "$(uname -r | cut -d '-' -f 1)"
-    exit 1
+fakeroot -- pacman -Sy --dbpath "$CHECKUPDATES_DB" >/dev/null 2>&1 || {
+	printf '%s' "$(uname -r | cut -d '-' -f 1)"
+	notify-send -a "pacman-updates" "Cannot fetch updates" >/dev/null 2>&1
+	exit 1
 }
 
 case $BLOCK_BUTTON in
-    1)
-        notify-send -i none -a "pacman-updates"\
-            "$(pacman -Qu --dbpath "$CHECKUPDATES_DB" 2> /dev/null |\
-                awk '! /[\[]/{print $1}')"
-    ;;
+1)
+	notify-send -a "pacman-updates" \
+		"$(pacman -Qu --dbpath "$CHECKUPDATES_DB" 2>/dev/null |
+			awk '! /[\[]/{print $1}')"
+	;;
 esac
 
-VALUE="$(pacman -Qu --dbpath "$CHECKUPDATES_DB" 2> /dev/null | grep -cv '\[.*\]')"
+VALUE="$(pacman -Qu --dbpath "$CHECKUPDATES_DB" 2>/dev/null | grep -cv '\[.*\]')"
 case $VALUE in
-    0) printf '%s' "$(uname -r | cut -d '-' -f 1)" ;;
-    *) printf '%s' "$VALUE" ;;
+0) printf '%s' "$(uname -r | cut -d '-' -f 1)" ;;
+*) printf '%s' "$VALUE" ;;
 esac
