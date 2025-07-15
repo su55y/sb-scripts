@@ -1,19 +1,39 @@
 #!/bin/sh
 
+DEFAULT_URLS_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/newsboat/urls"
+[ -n "$URLS_FILE" ] || URLS_FILE="$DEFAULT_URLS_FILE"
+
+notify() { notify-send -i newsboat -a ' newsboat' "$1"; }
+
 unread_count() {
-	unread="$(newsboat -x print-unread)"
-	printf '%d' "${unread%% *}"
+    unread="$(newsboat -u "$URLS_FILE" -x print-unread)"
+    case $unread in
+    [0-9]*) printf '%d' "${unread%% *}" ;;
+    *) notify "$unread" ;;
+    esac
 }
+
 update() {
-	notify-send -a " newsboat" "Updating RSS feeds..."
-	old_unread="$(unread_count)"
-	newsboat -x reload
-	new_unread="$(unread_count)"
-	notify-send -a " newsboat" "$((old_unread - new_unread)) new entries"
+    if pidof newsboat >/dev/null 2>&1; then
+        return
+    fi
+    notify 'Updating RSS feeds...'
+    old_unread="$(unread_count)"
+    newsboat -u "$URLS_FILE" -x reload
+    new_unread="$(unread_count)"
+
+    new_entries_count=$((new_unread - old_unread))
+    case $new_entries_count in
+    0) notify 'No updates' ;;
+    [1-9]*) notify "$new_entries_count new entries" ;;
+    *) notify "Unexpected output '$new_entries_count'" ;;
+    esac
+
 }
 
 case $BLOCK_BUTTON in
 1) update ;;
 esac
 
-printf '%d' "$(unread_count)"
+# shellcheck disable=SC2046
+printf '%d' $(unread_count)
