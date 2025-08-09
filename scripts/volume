@@ -7,14 +7,14 @@ case $BLOCK_BUTTON in
 5) pamixer --allow-boost -d 5 ;;
 esac
 
-ICON="󰝟"
-VALUE="$(pamixer --get-volume)"
-if [ "$VALUE" -gt "60" ]; then
-	ICON="󰕾"
-elif [ "$VALUE" -gt "30" ]; then
-	ICON="󰖀"
-elif [ "$VALUE" -gt "0" ]; then
-	ICON="󰕿"
+ICON=󰝟
+VALUE=$(pamixer --get-volume)
+if [ "$VALUE" -gt 60 ]; then
+    ICON=󰕾
+elif [ "$VALUE" -gt 30 ]; then
+    ICON=󰖀
+elif [ "$VALUE" -gt 0 ]; then
+    ICON=󰕿
 fi
 
 [ "$(pamixer --get-mute)" = true ] && OUTPUT=" 󰝟 " || OUTPUT=" $ICON ${VALUE}% "

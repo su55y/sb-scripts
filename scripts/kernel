@@ -1,12 +1,12 @@
 #!/bin/sh
-CACHE="/tmp/kernelv"
+CACHE=/tmp/kernelv
 [ -f "$CACHE" ] || kernelv -a >"$CACHE"
 case $BLOCK_BUTTON in
 1)
-	notify-send -i "none" -a "kernel list" \
-		"$(cat "$CACHE" || kernelv -a)"
-	;;
-2) kernelv -a >"$CACHE" ;;
+    notify-send -i none -a 'kernel list' \
+        "$(cat "$CACHE" || kernelv -all)"
+    ;;
+2) kernelv -all >"$CACHE" ;;
 esac
 
 printf '%s' "$(uname -r | cut -d '-' -f 1)"

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-IFACE="wlan0"
+: "${IFACE:=wlan0}"
 
 RX="/sys/class/net/$IFACE/statistics/rx_bytes"
 TX="/sys/class/net/$IFACE/statistics/tx_bytes"
@@ -8,30 +8,29 @@ TX="/sys/class/net/$IFACE/statistics/tx_bytes"
 [ -f "$RX" ] || exit 1
 [ -f "$TX" ] || exit 1
 
-CACHE_DIR_NAME="traffic_${IFACE}"
-CACHE="${XDG_CACHE_HOME:-$HOME/.cache}"
-CACHE="${CACHE}/${CACHE_DIR_NAME}"
-[ -d "$CACHE" ] || {
-	mkdir -p "$CACHE" || exit 1
-}
-CRX="$CACHE/rx"
-CTX="$CACHE/tx"
+CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}/traffic_${IFACE}"
+if [ ! -d "$CACHE_HOME" ]; then
+    mkdir -p "$CACHE_HOME" || exit 1
+fi
+
+CRX="$CACHE_HOME/rx"
+CTX="$CACHE_HOME/tx"
 
 [ -f "$CRX" ] || {
-	cp "$RX" "$CRX" || exit 1
-	chmod 600 "$CRX"
+    cp "$RX" "$CRX" || exit 1
+    chmod 600 "$CRX"
 }
 [ -f "$CTX" ] || {
-	cp "$TX" "$CTX" || exit 1
-	chmod 600 "$CTX"
+    cp "$TX" "$CTX" || exit 1
+    chmod 600 "$CTX"
 }
 # $1 current and $2 previous statistics
 get_diff() {
-	read -r val <"$1"
-	read -r prev <"$2"
+    read -r val <"$1"
+    read -r prev <"$2"
 
-	printf '%d' "$val" >"$2"
-	printf '%s' "$(printf '%d' "$((val - prev))" | numfmt --to=iec)"
+    printf '%d' "$val" >"$2"
+    printf '%s' "$(printf '%d' "$((val - prev))" | numfmt --to=iec)"
 }
 
 rx="$(get_diff "$RX" "$CRX")"

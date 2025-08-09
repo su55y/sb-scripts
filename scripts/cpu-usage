@@ -1,18 +1,16 @@
 #!/bin/sh
 # port of https://github.com/vivien/i3blocks-contrib/blob/master/cpu_usage2/cpu_usage2.c
 
-CACHE_DIR_NAME="cpu_usage_cache"
-CACHE="${XDG_CACHE_HOME:-$HOME/.cache}"
-CACHE="${CACHE}/${CACHE_DIR_NAME}"
-[ -d "$CACHE" ] || {
-	mkdir -p "$CACHE" || exit 1
-}
+CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}/cpu_usage_cache"
+if [ ! -d "$CACHE_HOME" ]; then
+    mkdir -p "$CACHE_HOME" || exit 1
+fi
 
-USED_FILE="${CACHE}/used"
-TOTAL_FILE="${CACHE}/total"
+USED_FILE="${CACHE_HOME}/used"
+TOTAL_FILE="${CACHE_HOME}/total"
 
 get_used() {
-	awk 'NR==1 {  
+    awk 'NR==1 {  
         used=$2+$3+$4+$7+$8+$9+$10+$11;
         total=used+$5+$6
         printf("%d %d\n", used, total)
@@ -20,8 +18,8 @@ get_used() {
 }
 
 update() {
-	printf '%d' "$1" >"$USED_FILE"
-	printf '%d' "$2" >"$TOTAL_FILE"
+    printf '%d' "$1" >"$USED_FILE"
+    printf '%d' "$2" >"$TOTAL_FILE"
 }
 
 result="$(get_used)"
@@ -29,7 +27,7 @@ used="${result% *}"
 total="${result#* }"
 
 if [ ! -f "$USED_FILE" ] || [ ! -f "$TOTAL_FILE" ]; then
-	update "$used" "$total" && exit
+    update "$used" "$total" && exit
 fi
 
 read -r old_used <"$USED_FILE"

@@ -1,6 +1,8 @@
 #!/bin/sh
 
-SENSOR="k10temp-pci-00c3"
-VALUE="$(sensors -u $SENSOR | sed -n 's/.*temp1_input: \([0-9]*\.[0-9]*\).*/\1/; s/\(\.[0-9]\)[0-9]*/\1/; T; p; q')"
+: "${SENSOR:=k10temp-pci-00c3}"
+VALUE="$(sensors -u $SENSOR |
+    sed -n 's/.*temp1_input: \([0-9]*\.[0-9]*\).*/\1/;
+    s/\(\.[0-9]\)[0-9]*/\1/; T; p; q')"
 
 printf '%s%%' "$VALUE"
