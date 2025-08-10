@@ -1,12 +1,21 @@
 #!/bin/sh
-CACHE=/tmp/kernelv
-[ -f "$CACHE" ] || kernelv -a >"$CACHE"
+
+kernel_list() {
+    KERNEL_RELEASES_CACHE=/tmp/kernel_releases_cache.json
+    KERNEL_RELEASES_URL=https://www.kernel.org/releases.json
+
+    if [ ! -f "$KERNEL_RELEASES_CACHE" ]; then
+        wget -q -O "$KERNEL_RELEASES_CACHE" "$KERNEL_RELEASES_URL" 2>/dev/null || exit 1
+    fi
+
+    jq -r '.releases[] |
+    select(.moniker != "linux-next") |
+    .version+" "+.moniker+" "+.released.isodate' \
+        "$KERNEL_RELEASES_CACHE"
+}
+
 case $BLOCK_BUTTON in
-1)
-    notify-send -i none -a 'kernel list' \
-        "$(cat "$CACHE" || kernelv -all)"
-    ;;
-2) kernelv -all >"$CACHE" ;;
+1) notify-send -i none -a 'kernel list' "$(kernel_list)" ;;
 esac
 
 printf '%s' "$(uname -r | cut -d '-' -f 1)"
